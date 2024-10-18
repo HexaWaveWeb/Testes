@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modo Claro/Escuro</title>
+  <style>
+    /* Estilos para o modo claro */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    /* Estilos para o modo escuro */
+    body.dark-mode {
+      background-color: #2c2c2c;
+      color: #ffffff;
+    }
+
+    /* Estilo do botão de alternar */
+    .toggle-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin: 20px;
+      border-radius: 5px;
+    }
+
+    .toggle-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Bem-vindo ao sistema de Modo Claro/Escuro</h1>
+  <p>Este é um exemplo simples de como alternar entre os modos claro e escuro usando JavaScript.</p>
+
+  <button class="toggle-btn" onclick="toggleMode()">Alternar Modo</button>
+
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+
+      // Salvar preferência no localStorage
+      const isDarkMode = document.body.classList.contains("dark-mode");
+      localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
+    }
+
+    // Verificar preferência salva ao carregar a página
+    window.onload = function() {
+      const darkMode = localStorage.getItem("darkMode");
+      if (darkMode === "enabled") {
+        document.body.classList.add("dark-mode");
+      }
+    }
+  </script>
+
+</body>
+</html>
