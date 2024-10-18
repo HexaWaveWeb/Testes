@@ -1,46 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Glassmorphism Login form</title>
-  <link rel="stylesheet" href="./style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Example</title>
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<section>
-  <div class="form-box">
-    <div class="form-value">
-      <form action="">
-        <h2>Login</h2>
-        <div class="inputbox">
-          <ion-icon name="mail-outline"></ion-icon>
-          <input type="email" required>
-          <label for="">Email</label>
-        </div>
-        <div class="inputbox">
-          <ion-icon name="lock-closed-outline"></ion-icon>
-          <input type="password" required>
-          <label for="">Password</label>
-        </div>
-        <div class="forget">
-          <label>
-            <input type="checkbox"> Remember me
-          </label>
-          <label>
-            <a href="#">Forgot password?</a>
-          </label>
-        </div>
-        <button>Log in</button>
-        <div class="register">
-          <p>Don't have a account ? <a href="#">Register</a></p>
-        </div>
-      </form>
+
+    <!-- Ícone de alerta (alerta de data inválida) -->
+    <div class="alert">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.666687C3.05439 0.666687 0.666667 3.05441 0.666667 6.00002C0.666667 8.94563 3.05439 11.3334 6 11.3334C8.94561 11.3334 11.3333 8.94563 11.3333 6.00002C11.3333 3.05441 8.94561 0.666687 6 0.666687ZM5.33333 3.33335H6.66667V6.66669H5.33333V3.33335ZM6.66667 8.00002H5.33333V9.33335H6.66667V8.00002Z" fill="#FF4F4F"/>
+        </svg>
+        <span>Invalid date</span>
     </div>
-  </div>
-</section>
-<!-- partial -->
-  <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js'></script>
-<script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js'></script>
+
+    <!-- Ícone de alerta (alerta de CVV inválido) -->
+    <div class="alert">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.666687C3.05439 0.666687 0.666667 3.05441 0.666667 6.00002C0.666667 8.94563 3.05439 11.3334 6 11.3334C8.94561 11.3334 11.3333 8.94563 11.3333 6.00002C11.3333 3.05441 8.94561 0.666687 6 0.666687ZM5.33333 3.33335H6.66667V6.66669H5.33333V3.33335ZM6.66667 8.00002H5.33333V9.33335H6.66667V8.00002Z" fill="#FF4F4F"/>
+        </svg>
+        <span>Invalid CVV</span>
+    </div>
+
 </body>
 </html>
