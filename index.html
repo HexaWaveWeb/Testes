@@ -1,27 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Example</title>
+    <title>Formulário de Contato</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Ícone de alerta (alerta de data inválida) -->
-    <div class="alert">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.666687C3.05439 0.666687 0.666667 3.05441 0.666667 6.00002C0.666667 8.94563 3.05439 11.3334 6 11.3334C8.94561 11.3334 11.3333 8.94563 11.3333 6.00002C11.3333 3.05441 8.94561 0.666687 6 0.666687ZM5.33333 3.33335H6.66667V6.66669H5.33333V3.33335ZM6.66667 8.00002H5.33333V9.33335H6.66667V8.00002Z" fill="#FF4F4F"/>
-        </svg>
-        <span>Invalid date</span>
+    <div class="container">
+        <h2>Contato</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Mensagem</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit">Enviar</button>
+        </form>
     </div>
-
-    <!-- Ícone de alerta (alerta de CVV inválido) -->
-    <div class="alert">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.666687C3.05439 0.666687 0.666667 3.05441 0.666667 6.00002C0.666667 8.94563 3.05439 11.3334 6 11.3334C8.94561 11.3334 11.3333 8.94563 11.3333 6.00002C11.3333 3.05441 8.94561 0.666687 6 0.666687ZM5.33333 3.33335H6.66667V6.66669H5.33333V3.33335ZM6.66667 8.00002H5.33333V9.33335H6.66667V8.00002Z" fill="#FF4F4F"/>
-        </svg>
-        <span>Invalid CVV</span>
-    </div>
-
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Formulário enviado com sucesso!');
+        });
+    </script>
 </body>
 </html>
