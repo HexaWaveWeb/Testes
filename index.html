@@ -132,54 +132,78 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+import { getDatabase, ref, runTransaction, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
-            authDomain: "webuserdata.firebaseapp.com",
-            databaseURL: "https://webuserdata-default-rtdb.firebaseio.com",
-            projectId: "webuserdata",
-            storageBucket: "webuserdata.appspot.com",
-            messagingSenderId: "996591404387",
-            appId: "1:996591404387:web:0d2f5d16b9494de4997f56",
-            measurementId: "G-VTDKLXL5TS"
-        };
+// Configuração do Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
+    authDomain: "webuserdata.firebaseapp.com",
+    databaseURL: "https://webuserdata-default-rtdb.firebaseio.com",
+    projectId: "webuserdata",
+    storageBucket: "webuserdata.appspot.com",
+    messagingSenderId: "996591404387",
+    appId: "1:996591404387:web:0d2f5d16b9494de4997f56",
+    measurementId: "G-VTDKLXL5TS"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+// Inicializa o Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-        let selectedCandidate = null;
+const form = document.getElementById('votingForm');
+const candidatoSelect = document.getElementById('candidato');
+const secaoSelect = document.getElementById('secao');
+const mensagem = document.getElementById('mensagem');
 
-        window.selectCandidate = function(candidate) {
-            selectedCandidate = candidate;
-            document.querySelectorAll('.candidate').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-        }
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const candidato = candidatoSelect.value;
+    const secao = secaoSelect.value;
 
-        window.votar = function() {
-            if (!selectedCandidate) {
-                exibirMensagem("Por favor, selecione um candidato.", "error");
+    if (candidato && secao) {
+        // Verificar o número total de votos
+        get(ref(database, 'totalVotos')).then((snapshot) => {
+            const totalVotos = snapshot.val() || 0;
+
+            // Verificar se atingiu o limite de 8381 votos
+            if (totalVotos >= 8381) {
+                exibirMensagem("Votação encerrada. Limite de votos atingido.", "error");
                 return;
             }
 
-            runTransaction(ref(database, 'segundoTurno/' + selectedCandidate), (currentVotes) => {
-                return (currentVotes || 0) + 1;
+            // Incrementar o voto para o candidato
+            runTransaction(ref(database, 'votos/' + candidato), (currentVotos) => {
+                return (currentVotos || 0) + 1;
             }).then(() => {
-                exibirMensagem("Voto registrado com sucesso!", "success");
+                // Incrementar o número total de votos
+                runTransaction(ref(database, 'totalVotos'), (currentTotalVotos) => {
+                    return (currentTotalVotos || 0) + 1;
+                }).then(() => {
+                    exibirMensagem("Voto registrado com sucesso para " + candidato + "!", "success");
+                }).catch((error) => {
+                    console.error("Erro ao incrementar total de votos:", error);
+                    exibirMensagem("Erro ao registrar voto. Tente novamente.", "error");
+                });
             }).catch((error) => {
                 console.error("Erro ao registrar voto:", error);
                 exibirMensagem("Erro ao registrar voto. Tente novamente.", "error");
             });
-        }
+        }).catch((error) => {
+            console.error("Erro ao verificar total de votos:", error);
+            exibirMensagem("Erro ao verificar votação. Tente novamente.", "error");
+        });
+    } else {
+        exibirMensagem("Por favor, selecione um candidato e uma seção.", "error");
+    }
+});
 
-        function exibirMensagem(texto, tipo) {
-            const mensagem = document.getElementById('mensagem');
-            mensagem.textContent = texto;
-            mensagem.className = tipo + ' fade-in';
-            setTimeout(() => {
-                mensagem.className = tipo;
-            }, 500);
-        }
+function exibirMensagem(texto, tipo) {
+    mensagem.textContent = texto;
+    mensagem.className = tipo + ' fade-in';
+    setTimeout(() => {
+        mensagem.className = tipo;
+    }, 500);
+}
     </script>
 </body>
 </html>
