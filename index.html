@@ -1,267 +1,332 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tarefas Profissional</title>
+    <title>Chat App</title>
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5f5f5;
-            --text-color: #333;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-        }
-
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f0f2f5;
         }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--secondary-color);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
+        .hidden {
+            display: none;
+        }
+        #loginForm, #registerForm {
+            background-color: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 40px auto;
         }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        .task-form {
-            display: flex;
-            margin-bottom: 20px;
-        }
-
-        .task-input {
-            flex-grow: 1;
+        input[type="email"], input[type="password"], input[type="text"], button {
+            width: 100%;
             padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
-        }
-
-        .add-task-btn {
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .add-task-btn:hover {
-            background-color: #357ae8;
-        }
-
-        .task-list {
-            list-style-type: none;
-        }
-
-        .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
             margin-bottom: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .task-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .task-item.completed {
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-
-        .task-actions button {
-            margin-left: 5px;
-            padding: 5px 10px;
-            border: none;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            box-sizing: border-box;
         }
-
-        .complete-btn {
-            background-color: var(--success-color);
+        button {
+            background-color: #1877f2;
             color: white;
-        }
-
-        .delete-btn {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .complete-btn:hover, .delete-btn:hover {
-            opacity: 0.8;
-        }
-
-        .filters {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .filter-btn {
-            margin: 0 5px;
-            padding: 5px 10px;
             border: none;
-            background-color: var(--primary-color);
-            color: white;
-             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-size: 16px;
         }
-
-        .filter-btn:hover {
-            background-color: #357ae8;
+        button:hover {
+            background-color: #166fe5;
         }
-
-        .filter-btn.active {
-            background-color: #2e6da4;
+        #chatList {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .chat-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .chat-item:hover {
+            background-color: #f5f5f5;
+        }
+        #chatWindow {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        #chatMessages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 20px;
+            max-width: 70%;
+        }
+        .message.sent {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        .message.received {
+            background-color: #f1f0f0;
+            align-self: flex-start;
+        }
+        #messageForm {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        #messageInput {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #logoutButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Lista de Tarefas Profissional</h1>
-        <form class="task-form">
-            <input type="text" id="task-input" class="task-input" placeholder="Adicione uma tarefa...">
-            <button class="add-task-btn">Adicionar</button>
-        </form>
-        <ul class="task-list">
-            <!-- Tarefas serão renderizadas aqui -->
-        </ul>
-        <div class="filters">
-            <button class="filter-btn" id="all-filter">Todas</button>
-            <button class="filter-btn" id="active-filter">Ativas</button>
-            <button class="filter-btn" id="completed-filter">Concluídas</button>
+        <div id="loginForm">
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Senha" required>
+            <button id="loginButton">Entrar</button>
+            <p>Não tem uma conta? <a href="#" id="showRegister">Registre-se</a></p>
+        </div>
+
+        <div id="registerForm" class="hidden">
+            <h2>Registro</h2>
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Senha" required>
+            <input type="text" id="registerName" placeholder="Nome" required>
+            <button id="registerButton">Registrar</button>
+            <p>Já tem uma conta? <a href="#" id="showLogin">Faça login</a></p>
+        </div>
+
+        <div id="chatApp" class="hidden">
+            <button id="logoutButton">Sair</button>
+            <h2>Chats</h2>
+            <div id="chatList"></div>
+            <h3>Novo Chat</h3>
+            <input type="text" id="newChatUser" placeholder="Email do usuário">
+            <input type="text" id="newChatTitle" placeholder="Título do chat">
+            <button id="createChatButton">Criar Chat</button>
+            <div id="chatWindow" class="hidden">
+                <div id="chatMessages"></div>
+                <form id="messageForm">
+                    <input type="text" id="messageInput" placeholder="Digite sua mensagem...">
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <script>
-        const taskInput = document.getElementById('task-input');
-        const addTaskBtn = document.getElementById('add-task-btn');
-        const taskList = document.getElementById('task-list');
-        const filters = document.querySelectorAll('.filter-btn');
+    <script type="module">
+        // Importar os módulos do Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js';
+        import { getDatabase, ref, set, push, onValue, get } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js';
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js';
 
-        let tasks = [];
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
+            authDomain: "webuserdata.firebaseapp.com",
+            databaseURL: "https://webuserdata-default-rtdb.firebaseio.com",
+            projectId: "webuserdata",
+            storageBucket: "webuserdata.appspot.com",
+            messagingSenderId: "996591404387",
+            appId: "1:996591404387:web:0d2f5d16b9494de4997f56",
+            measurementId: "G-VTDKLXL5TS"
+        };
 
-        // Função para adicionar tarefa
-        function addTask(task) {
-            tasks.push(task);
-            renderTasks();
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        // Elementos do DOM
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const chatApp = document.getElementById('chatApp');
+        const chatList = document.getElementById('chatList');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const logoutButton = document.getElementById('logoutButton');
+        const createChatButton = document.getElementById('createChatButton');
+        const newChatUser = document.getElementById('newChatUser');
+        const newChatTitle = document.getElementById('newChatTitle');
+
+        let currentUser = null;
+        let currentChat = null;
+
+        // Função para mostrar/esconder elementos
+        function showElement(element, show = true) {
+            element.classList.toggle('hidden', !show);
         }
 
-        // Função para renderizar tarefas
-        function renderTasks() {
-            taskList.innerHTML = '';
-            tasks.forEach((task) => {
-                const taskItem = document.createElement('li');
-                taskItem.className = 'task-item';
-                taskItem.innerHTML = `
-                    <span>${task.name}</span>
-                    <div class="task-actions">
-                        <button class="complete-btn">Concluir</button>
-                        <button class="delete-btn">Excluir</button>
-                    </div>
-                `;
-                taskList.appendChild(taskItem);
+        // Autenticação
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                showElement(loginForm, false);
+                showElement(registerForm, false);
+                showElement(chatApp, true);
+                loadChats();
+            } else {
+                currentUser = null;
+                showElement(loginForm, true);
+                showElement(registerForm, false);
+                showElement(chatApp, false);
+            }
+        });
+
+        // Login
+        document.getElementById('loginButton').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .catch((error) => alert('Erro no login: ' + error.message));
+        });
+
+        // Registro
+        document.getElementById('registerButton').addEventListener('click', () => {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const name = document.getElementById('registerName').value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    set(ref(db, 'users/' + userCredential.user.uid), {
+                        name: name,
+                        email: email
+                    });
+                })
+                .catch((error) => alert('Erro no registro: ' + error.message));
+        });
+
+        // Logout
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).catch((error) => alert('Erro no logout: ' + error.message));
+        });
+
+        // Alternar entre login e registro
+        document.getElementById('showRegister').addEventListener('click', () => {
+            showElement(loginForm, false);
+            showElement(registerForm, true);
+        });
+
+        document.getElementById('showLogin').addEventListener('click', () => {
+            showElement(loginForm, true);
+            showElement(registerForm, false);
+        });
+
+        // Carregar chats
+        function loadChats() {
+            const chatsRef = ref(db, 'chats');
+            onValue(chatsRef, (snapshot) => {
+                chatList.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const chatData = childSnapshot.val();
+                    if (chatData.participants.includes(currentUser.uid)) {
+                        const chatElement = document.createElement('div');
+                        chatElement.className = 'chat-item';
+                        chatElement.textContent = chatData.title;
+                        chatElement.addEventListener('click', () => openChat(childSnapshot.key, chatData.title));
+                        chatList.appendChild(chatElement);
+                    }
+                });
             });
         }
 
-        // Função para filtrar tarefas
-        function filterTasks(filter) {
-            switch (filter) {
-                case 'all':
-                    renderTasks();
-                    break;
-                case 'active':
-                    taskList.innerHTML = '';
-                    tasks.forEach((task) => {
-                        if (!task.completed) {
-                            const taskItem = document.createElement('li');
-                            taskItem.className = 'task-item';
-                            taskItem.innerHTML = `
-                                <span>${task.name}</span>
-                                <div class="task-actions">
-                                    <button class="complete-btn">Concluir</button>
-                                    <button class="delete-btn">Excluir</button>
-                                </div>
-                            `;
-                            taskList.appendChild(taskItem);
-                        }
-                    });
-                    break;
-                case 'completed':
-                    taskList.innerHTML = '';
-                    tasks.forEach((task) => {
-                        if (task.completed) {
-                            const taskItem = document.createElement('li');
-                            taskItem.className = 'task-item completed';
-                            taskItem.innerHTML = `
-                                <span>${task.name}</span>
-                                <div class="task-actions">
-                                    <button class="delete-btn">Excluir</button>
-                                </div>
-                            `;
-                            taskList.appendChild(taskItem);
-                        }
-                    });
-                    break;
-            }
+        // Abrir chat
+        function openChat(chatId, chatTitle) {
+            currentChat = chatId;
+            showElement(chatWindow, true);
+            document.querySelector('#chatWindow h2').textContent = chatTitle;
+            loadMessages(chatId);
         }
 
-        // Event listeners
-        addTaskBtn.addEventListener('click', (e) => {
+        // Carregar mensagens
+        function loadMessages(chatId) {
+            const messagesRef = ref(db, `messages/${chatId}`);
+            onValue(messagesRef, (snapshot) => {
+                chatMessages.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const messageData = childSnapshot.val();
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `message ${messageData.sender === currentUser.uid ? 'sent' : 'received'}`;
+                    messageElement.textContent = messageData.text;
+                    chatMessages.appendChild(messageElement);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        // Enviar mensagem
+        messageForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const taskName = taskInput.value.trim();
-            if (taskName) {
-                addTask({ name: taskName, completed: false });
-                taskInput.value = '';
+            const messageText = messageInput.value.trim();
+            if (messageText && currentChat) {
+                const newMessageRef = push(ref(db, `messages/${currentChat}`));
+                set(newMessageRef, {
+                    sender: currentUser.uid,
+                    text: messageText,
+                    timestamp: Date.now()
+                });
+                messageInput.value = '';
             }
         });
 
-        filters.forEach((filter) => {
-            filter.addEventListener('click', () => {
-                filters.forEach((f) => f.classList.remove('active'));
-                filter.classList.add('active');
-                filterTasks(filter.id.replace('-filter', ''));
-            });
-        });
-
-        taskList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('complete-btn')) {
-                const taskItem = e.target.parentNode.parentNode;
-                const taskIndex = tasks.findIndex((task) => task.name === taskItem.querySelector('span').textContent);
-                tasks[taskIndex].completed = true;
-                renderTasks();
-            } else if (e.target.classList.contains('delete-btn')) {
-                const taskItem = e.target.parentNode.parentNode;
-                const taskIndex = tasks.findIndex((task) => task.name === taskItem.querySelector('span').textContent);
-                tasks.splice(taskIndex, 1);
-                renderTasks();
+        // Criar novo chat
+        createChatButton.addEventListener('click', () => {
+            const userEmail = newChatUser.value.trim();
+            const chatTitle = newChatTitle.value.trim();
+            if (userEmail && chatTitle) {
+                get(ref(db, 'users')).then((snapshot) => {
+                    let targetUser = null;
+                    snapshot.forEach((childSnapshot) => {
+                        const userData = childSnapshot.val();
+                        if (userData.email === userEmail) {
+                            targetUser = childSnapshot.key;
+                        }
+                    });
+                    if (targetUser) {
+                        const newChatRef = push(ref(db, 'chats'));
+                        set(newChatRef, {
+                            title: chatTitle,
+                            participants: [currentUser.uid, targetUser]
+                        }).then(() => {
+                            newChatUser.value = '';
+                            newChatTitle.value = '';
+                            alert('Chat criado com sucesso!');
+                        }).catch((error) => alert('Erro ao criar chat: ' + error.message));
+                    } else {
+                        alert('Usuário não encontrado.');
+                    }
+                });
+            } else {
+                alert('Por favor, preencha todos os campos.');
             }
         });
     </script>
