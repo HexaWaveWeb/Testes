@@ -221,7 +221,7 @@
                     runTransaction(ref(database, 'totalVotos'), (currentTotal) => {
                         return (currentTotal || 0) + 1;
                     }).then(() => {
-                        exibirMensagem("Voto registrado com sucesso!", "success");
+                        exibirMensagem( "success");
                         submitButton.disabled = false;
                         submitButton.textContent = 'Votar';
 
