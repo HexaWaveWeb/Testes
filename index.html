@@ -1,186 +1,23 @@
-agora.6 <!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segundo turno - Urna Eletrônica</title>
-    <style>
-        :root {
-            --primary-color: #1a73e8;
-            --secondary-color: #4285f4;
-            --background-color: #f8f9fa;
-            --text-color: #202124;
-            --border-color: #dadce0;
-        }
-
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .candidates {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-        }
-
-        .candidate {
-            flex: 1;
-            text-align: center;
-            padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .candidate:hover {
-            background-color: var(--background-color);
-        }
-
-        .candidate.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(26, 115, 232, 0.1);
-        }
-
-        .candidate img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: var(--secondary-color);
-        }
-
-        #mensagem {
-            margin-top: 1rem;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .success {
-            color: #0f9d58;
-        }
-
-        .error {
-            color: #d93025;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-    </style>
+    <title>Exemplo com Bootstrap</title>
+    <!-- Link para o CSS do Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <a href="resultados.html">Resultados</a>
-    <div class="container">
-        <h1>Segundo Turno - Urna Eletrônica</h1>
-        <div class="candidates">
-            <div class="candidate" onclick="selectCandidate('FL')">
-                <img src="/placeholder.svg?height=100&width=100" alt="Francisco Luciano">
-                <h2>Francisco Luciano</h2>
-            </div>
-            <div class="candidate" onclick="selectCandidate('JCL')">
-                <img src="/placeholder.svg?height=100&width=100" alt="João Carlos De Lima">
-                <h2>João Carlos De Lima</h2>
-            </div>
-        </div>
-        <button onclick="votar()">Votar</button>
-        <div id="mensagem"></div>
+    <!-- Container para centralizar o conteúdo -->
+    <div class="container text-center">
+        <h1 class="mt-5">Meu Primeiro Site com Bootstrap!</h1>
+        <p>Este é um exemplo simples usando o framework Bootstrap.</p>
+        
+        <!-- Botão estilizado com Bootstrap -->
+        <a href="#" class="btn btn-primary">Clique aqui!</a>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
-            authDomain: "webuserdata.firebaseapp.com",
-            databaseURL: "https://webuserdata-default-rtdb.firebaseio.com",
-            projectId: "webuserdata",
-            storageBucket: "webuserdata.appspot.com",
-            messagingSenderId: "996591404387",
-            appId: "1:996591404387:web:0d2f5d16b9494de4997f56",
-            measurementId: "G-VTDKLXL5TS"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        let selectedCandidate = null;
-
-        window.selectCandidate = function(candidate) {
-            selectedCandidate = candidate;
-            document.querySelectorAll('.candidate').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-        }
-
-        window.votar = function() {
-            if (!selectedCandidate) {
-                exibirMensagem("Por favor, selecione um candidato.", "error");
-                return;
-            }
-
-            runTransaction(ref(database, 'segundoTurno/' + selectedCandidate), (currentVotes) => {
-                return (currentVotes || 0) + 1;
-            }).then(() => {
-                exibirMensagem("Voto registrado com sucesso!", "success");
-            }).catch((error) => {
-                console.error("Erro ao registrar voto:", error);
-                exibirMensagem("Erro ao registrar voto. Tente novamente.", "error");
-            });
-        }
-
-        function exibirMensagem(texto, tipo) {
-            const mensagem = document.getElementById('mensagem');
-            mensagem.textContent = texto;
-            mensagem.className = tipo + ' fade-in';
-            setTimeout(() => {
-                mensagem.className = tipo;
-            }, 500);
-        }
-    </script>
+    <!-- Script para o JavaScript do Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
