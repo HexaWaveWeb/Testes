@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultados da Eleição - Patronato</title>
+    <title>Resultados do Segundo Turno - Patronato</title>
     <style>
         :root {
             --primary-color: #1a73e8;
@@ -59,7 +59,7 @@
 
         .candidates-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
         }
 
@@ -69,6 +69,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .candidate-card:hover {
@@ -119,6 +121,17 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        .elected-banner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            transform: rotate(45deg) translate(30%, -50%);
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -130,6 +143,10 @@
 
             .candidate-card {
                 padding: 1rem;
+            }
+
+            .candidates-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -145,7 +162,7 @@
 </head>
 <body>
     <header>
-        <h1>Resultados da Eleição - Patronato</h1>
+        <h1>Resultados do Segundo Turno - Patronato</h1>
     </header>
 
     <div class="container">
@@ -155,11 +172,9 @@
     </div>
 
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
             authDomain: "webuserdata.firebaseapp.com",
@@ -171,11 +186,10 @@
             measurementId: "G-VTDKLXL5TS"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        const MAX_VOTES = 8367;
+        const MAX_VOTES = 8381;
         let totalVotes = 0;
         let candidatesData = [];
 
@@ -192,7 +206,7 @@
 
             candidatesData.sort((a, b) => b.percentage - a.percentage);
 
-            candidatesData.forEach(candidate => {
+            candidatesData.forEach((candidate, index) => {
                 const candidateCard = document.createElement('div');
                 candidateCard.className = 'candidate-card fade-in';
                 candidateCard.innerHTML = `
@@ -202,6 +216,7 @@
                     <div class="progress-bar">
                         <div class="progress" style="width: ${candidate.percentage}%"></div>
                     </div>
+                    ${totalVotes >= MAX_VOTES && index === 0 ? '<div class="elected-banner">ELEITO</div>' : ''}
                 `;
                 candidatesContainer.appendChild(candidateCard);
             });
@@ -213,20 +228,12 @@
         function updateStatusMessage() {
             const statusMessage = document.getElementById('status-message');
             if (totalVotes >= MAX_VOTES) {
-                statusMessage.textContent = "A votação foi encerrada.";
+                statusMessage.textContent = "A votação foi encerrada. ";
                 statusMessage.style.backgroundColor = "var(--error-color)";
                 statusMessage.style.color = "white";
 
                 const winner = candidatesData[0];
-                if (winner.percentage > 51) {
-                    statusMessage.textContent += ` ${winner.name} foi eleito com ${winner.percentage.toFixed(2)}% dos votos.`;
-                } else {
-                    statusMessage.textContent += ` Haverá segundo turno entre ${candidatesData[0].name} e ${candidatesData[1].name}.`;
-                }
-            } else if (candidatesData[0].percentage > 51) {
-                statusMessage.textContent = `${candidatesData[0].name} está liderando com ${candidatesData[0].percentage.toFixed(2)}% dos votos.`;
-                statusMessage.style.backgroundColor = "var(--success-color)";
-                statusMessage.style.color = "white";
+                statusMessage.textContent += `${winner.name} foi eleito com ${winner.percentage.toFixed(2)}% dos votos.`;
             } else {
                 statusMessage.textContent = "A votação está em andamento.";
                 statusMessage.style.backgroundColor = "var(--warning-color)";
@@ -237,10 +244,14 @@
         function updateRemainingVotes() {
             const remainingVotes = document.getElementById('remaining-votes');
             const votesLeft = MAX_VOTES - totalVotes;
-            remainingVotes.textContent = `Faltam ${votesLeft} votos para encerrar a votação.`;
+            const percentageComplete = ((totalVotes / MAX_VOTES) * 100).toFixed(2);
+            remainingVotes.innerHTML = `
+                <div>Faltam ${votesLeft} votos para encerrar a votação.</div>
+                <div>Progresso da votação: ${percentageComplete}% concluído</div>
+            `;
         }
 
-        onValue(ref(database, 'votos'), (snapshot) => {
+        onValue(ref(database, 'segundoTurno'), (snapshot) => {
             const votes = snapshot.val() || {};
             updateResults(votes);
         });
