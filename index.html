@@ -120,7 +120,6 @@
 </head>
 <body>
     <div class="container">
-        <a href="resultados.html">Primeiro Turno Resultados"</a>
         <h1>Urna Eletrônica - Patronato</h1>
         <form id="votingForm">
             <div class="form-group">
@@ -177,7 +176,6 @@
         const form = document.getElementById('votingForm');
         const candidatoSelect = document.getElementById('candidato');
         const secaoSelect = document.getElementById('secao');
-        const submitButton = document.getElementById('submitButton');
         const mensagem = document.getElementById('mensagem');
 
         // Carregar seleções salvas
@@ -194,16 +192,11 @@
             const secao = secaoSelect.value;
 
             if (candidato && secao) {
-                submitButton.disabled = true;
-                submitButton.textContent = 'Processando...';
-
                 // Verificar o número total de votos
                 get(ref(database, 'totalVotos')).then((snapshot) => {
                     const totalVotos = snapshot.val() || 0;
                     if (totalVotos >= 8367) {
                         exibirMensagem("A votação já foi encerrada. Limite de votos atingido.", "error");
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Votar';
                         return;
                     }
 
@@ -221,9 +214,7 @@
                     runTransaction(ref(database, 'totalVotos'), (currentTotal) => {
                         return (currentTotal || 0) + 1;
                     }).then(() => {
-                        exibirMensagem( "success");
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Votar';
+                        exibirMensagem("Voto registrado com sucesso!", "success");
 
                         // Salvar seleções
                         localStorage.setItem('candidato', candidato);
@@ -235,7 +226,13 @@
             }
         });
 
-        
+        function exibirMensagem(texto, tipo) {
+            mensagem.textContent = texto;
+            mensagem.className = tipo + ' fade-in';
+            setTimeout(() => {
+                mensagem.className = tipo;
+            }, 500);
+        }
     </script>
 </body>
 </html>
