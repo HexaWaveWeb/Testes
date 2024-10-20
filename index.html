@@ -21,6 +21,15 @@
             opacity: 0;
             transition: opacity 1s ease-in-out;
         }
+        iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover; /* Preenche a tela mantendo a proporção */
+        }
         #video-overlay {
             position: fixed;
             top: 0;
@@ -56,7 +65,7 @@
 </head>
 <body>
     <div id="video-container">
-        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1021530450?h=b7cdd76c08&autoplay=1&loop=0&background=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="vimeo-player" src="https://player.vimeo.com/video/1021530450?h=b7cdd76c08&autoplay=1&loop=0&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div id="video-overlay"></div>
     <div id="loading">
@@ -100,23 +109,6 @@
                     window.location.href = 'home.html';
                 }, 3000);
             });
-
-            // Ajustar o tamanho do vídeo para preencher a tela
-            function resizeVideo() {
-                const width = window.innerWidth;
-                const height = window.innerHeight;
-                const aspectRatio = 16 / 9; // Proporção do vídeo (ajuste conforme necessário)
-
-                if (width / height > aspectRatio) {
-                    player.setWidth(width).setHeight(width / aspectRatio);
-                } else {
-                    player.setHeight(height).setWidth(height * aspectRatio);
-                }
-            }
-
-            // Chamar a função de redimensionamento inicialmente e ao redimensionar a janela
-            resizeVideo();
-            window.addEventListener('resize', resizeVideo);
         });
     </script>
     <script src="https://player.vimeo.com/api/player.js"></script>
