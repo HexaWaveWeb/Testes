@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urna Eletrônica - Patronato</title>
+    <title>Segundo turno - Urna Eletrônica</title>
     <style>
         :root {
             --primary-color: #1a73e8;
@@ -41,30 +41,36 @@
             margin-bottom: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .candidates {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
         }
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+        .candidate {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background-color: #fff;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+        .candidate:hover {
+            background-color: var(--background-color);
         }
 
-        select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        .candidate.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+
+        .candidate img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
         }
 
         button {
@@ -81,11 +87,6 @@
 
         button:hover {
             background-color: var(--secondary-color);
-        }
-
-        button:disabled {
-            background-color: #9e9e9e;
-            cursor: not-allowed;
         }
 
         #mensagem {
@@ -110,54 +111,29 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Urna Eletrônica - Patronato</h1>
-        <form id="votingForm">
-            <div class="form-group">
-                <label for="candidato">Selecione o candidato:</label>
-                <select id="candidato" name="candidato" required>
-                    <option value="">Escolha um candidato</option>
-                    <option value="Francisco Luciano">Francisco Luciano</option>
-                    <option value="Karen Moura">Karen Moura</option>
-                    <option value="Harison Xavier">Harison Xavier</option>
-                    <option value="Saulo Costa">Saulo Costa</option>
-                    <option value="Ribeiro Lima">Ribeiro Lima</option>
-                    <option value="João Carlos De Lima">João Carlos De Lima</option>
-                </select>
+        <h1>Segundo Turno - Urna Eletrônica</h1>
+        <div class="candidates">
+            <div class="candidate" onclick="selectCandidate('FL')">
+                <img src="/placeholder.svg?height=100&width=100" alt="Francisco Luciano">
+                <h2>Francisco Luciano</h2>
             </div>
-            <div class="form-group">
-                <label for="secao">Selecione a seção:</label>
-                <select id="secao" name="secao" required>
-                    <option value="">Escolha uma seção</option>
-                    <option value="235">Seção 235</option>
-                    <option value="67">Seção 67</option>
-                    <option value="68">Seção 68</option>
-                    <option value="619">Seção 619</option>
-                    <option value="78">Seção 78</option>
-                    <option value="Patronato">Seção Patronato</option>
-                    <option value="628">Seção 628</option>
-                </select>
+            <div class="candidate" onclick="selectCandidate('JCL')">
+                <img src="/placeholder.svg?height=100&width=100" alt="João Carlos De Lima">
+                <h2>João Carlos De Lima</h2>
             </div>
-            <button type="submit" id="submitButton">Votar</button>
-        </form>
+        </div>
+        <button onclick="votar()">Votar</button>
         <div id="mensagem"></div>
     </div>
 
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, runTransaction, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCF50W92_ZmSLGcDLlOr8r7QtF__JchP50",
             authDomain: "webuserdata.firebaseapp.com",
@@ -169,64 +145,35 @@
             measurementId: "G-VTDKLXL5TS"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        const form = document.getElementById('votingForm');
-        const candidatoSelect = document.getElementById('candidato');
-        const secaoSelect = document.getElementById('secao');
-        const mensagem = document.getElementById('mensagem');
+        let selectedCandidate = null;
 
-        // Carregar seleções salvas
-        if (localStorage.getItem('candidato')) {
-            candidatoSelect.value = localStorage.getItem('candidato');
-        }
-        if (localStorage.getItem('secao')) {
-            secaoSelect.value = localStorage.getItem('secao');
+        window.selectCandidate = function(candidate) {
+            selectedCandidate = candidate;
+            document.querySelectorAll('.candidate').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
         }
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const candidato = candidatoSelect.value;
-            const secao = secaoSelect.value;
-
-            if (candidato && secao) {
-                // Verificar o número total de votos
-                get(ref(database, 'totalVotos')).then((snapshot) => {
-                    const totalVotos = snapshot.val() || 0;
-                    if (totalVotos >= 8367) {
-                        exibirMensagem("A votação já foi encerrada. Limite de votos atingido.", "error");
-                        return;
-                    }
-
-                    // Incrementar o voto para o candidato
-                    runTransaction(ref(database, 'votos/' + candidato), (currentVotos) => {
-                        return (currentVotos || 0) + 1;
-                    });
-
-                    // Incrementar o voto para a seção
-                    runTransaction(ref(database, 'secoes/' + secao), (currentVotos) => {
-                        return (currentVotos || 0) + 1;
-                    });
-
-                    // Incrementar o total de votos
-                    runTransaction(ref(database, 'totalVotos'), (currentTotal) => {
-                        return (currentTotal || 0) + 1;
-                    }).then(() => {
-                        exibirMensagem("Voto registrado com sucesso!", "success");
-
-                        // Salvar seleções
-                        localStorage.setItem('candidato', candidato);
-                        localStorage.setItem('secao', secao);
-                    });
-                });
-            } else {
-                exibirMensagem("Por favor, selecione um candidato e uma seção.", "error");
+        window.votar = function() {
+            if (!selectedCandidate) {
+                exibirMensagem("Por favor, selecione um candidato.", "error");
+                return;
             }
-        });
+
+            runTransaction(ref(database, 'segundoTurno/' + selectedCandidate), (currentVotes) => {
+                return (currentVotes || 0) + 1;
+            }).then(() => {
+                exibirMensagem("Voto registrado com sucesso!", "success");
+            }).catch((error) => {
+                console.error("Erro ao registrar voto:", error);
+                exibirMensagem("Erro ao registrar voto. Tente novamente.", "error");
+            });
+        }
 
         function exibirMensagem(texto, tipo) {
+            const mensagem = document.getElementById('mensagem');
             mensagem.textContent = texto;
             mensagem.className = tipo + ' fade-in';
             setTimeout(() => {
