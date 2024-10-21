@@ -3,260 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HexaWave Network</title>
+    <title>NetFutur Serviços - Erro do Sistema</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --text-color: #e94560;
+            --light-text: #f1f1f1;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: var(--text-color);
             text-align: center;
-            width: 80%;
-            max-width: 600px;
+            font-size: 2.5em;
         }
-        .loading-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
+
+        .error-message {
+            background-color: var(--accent-color);
+            border-left: 5px solid var(--text-color);
+            padding: 20px;
             margin: 20px 0;
-            overflow: hidden;
+            border-radius: 5px;
+            font-size: 1.2em;
+            animation: fadeIn 1s;
         }
-        .loading-progress {
-            width: 0%;
-            height: 100%;
-            background-color: #4CAF50;
-            transition: width 0.5s;
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
-        .hidden {
-            display: none;
-        }
-        .error-container {
-            background-color: #ff4444;
+
+        .status-card {
+            background-color: var(--secondary-color);
             padding: 20px;
             border-radius: 10px;
-            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
-        .error-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        .status-card:hover {
+            transform: translateY(-5px);
         }
-        .error-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
+
+        .status-card h3 {
+            color: var(--text-color);
+            margin-bottom: 10px;
         }
-        .error-icon {
-            color: #ff0000;
-            font-weight: bold;
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
         }
+
+        .status-indicator i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .chart-container {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
         .log-container {
-            background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 20px;
-            height: 100px;
-            overflow-y: scroll;
-            text-align: left;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            height: 300px;
+            overflow-y: auto;
         }
-        .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
+
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .log-entry.error {
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+        .log-entry.warning {
+            background-color: rgba(255, 255, 0, 0.1);
+        }
+
+        .log-entry.info {
+            background-color: rgba(0, 0, 255, 0.1);
+        }
+
+        .download-section {
+            margin-top: 30px;
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .download-button {
+            background-color: var(--accent-color);
+            color: var(--light-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: var(--text-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: var(--text-color);
+            transition: width 0.5s ease;
+        }
+
+        footer {
             text-align: center;
-            font-size: 12px;
-            color: #888;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1 class="animate__animated animate__fadeInDown">NetFutur Serviços - Erro do Sistema</h1>
+    </header>
+
     <div class="container">
-        <div id="loadingScreen">
-            <h1>Carregando HexaWave Network</h1>
-            <div class="loading-bar">
-                <div id="loadingProgress" class="loading-progress"></div>
-            </div>
-            <div id="loadingText"></div>
+        <div class="error-message animate__animated animate__fadeIn">
+            <p><i class="fas fa-exclamation-triangle"></i> Servidor com falha devido à atualização disponibilizada para os usuários para a mudança da HexaWave Network para NetFutur Serviços. A API apresentou erros críticos.</p>
         </div>
 
-        <div id="connectingScreen" class="hidden">
-            <h2>Tentando Conectar Com HexaWave Network</h2>
-            <div class="loading-bar">
-                <div id="connectingProgress" class="loading-progress"></div>
+        <div class="status-grid">
+            <div class="status-card animate__animated animate__fadeInUp">
+                <h3>Status do Servidor</h3>
+                <div class="status-indicator">
+                    <i class="fas fa-server"></i>
+                    <span>Offline</span>
+                </div>
+            </div>
+            <div class="status-card animate__animated animate__fadeInUp">
+                <h3>API</h3>
+                <div class="status-indicator">
+                    <i class="fas fa-code"></i>
+                    <span>Erro</span>
+                </div>
+            </div>
+            <div class="status-card animate__animated animate__fadeInUp">
+                <h3>Banco de Dados</h3>
+                <div class="status-indicator">
+                    <i class="fas fa-database"></i>
+                    <span>Parcialmente Operacional</span>
+                </div>
+            </div>
+            <div class="status-card animate__animated animate__fadeInUp">
+                <h3>CDN</h3>
+                <div class="status-indicator">
+                    <i class="fas fa-cloud"></i>
+                    <span>Erro</span>
+                </div>
             </div>
         </div>
 
-        <div id="updateScreen" class="hidden">
-            <h2>Atualização Disponível da 2.3.2+</h2>
-            <ul>
-                <li>Melhora no sistema</li>
-                <li>Erros corrigidos</li>
-                <li>Sistema Melhorando</li>
-                <li>Designer Melhorando</li>
-                <li>Sistemas 3.89.7</li>
-            </ul>
-            <button id="downloadButton">Abaixar</button>
-            <div id="downloadProgress" class="loading-bar hidden">
-                <div id="downloadBar" class="loading-progress"></div>
-            </div>
+        <div class="chart-container">
+            <canvas id="systemChart"></canvas>
         </div>
 
-        <div id="errorScreen" class="hidden">
-            <h2>Erro de Conexão</h2>
-            <div class="error-container">
-                <p>"Servidor com falha devido a atualização disponibilizada para os usuários para a mudança da HexaWave Network Para NetFutur Serviços, a api apresentou erros"</p>
+        <div class="log-container" id="logContainer">
+            <h3>Logs do Sistema</h3>
+            <!-- Log entries will be dynamically added here -->
+        </div>
+
+        <div class="download-section">
+            <h3>Download de Arquivos de Diagnóstico</h3>
+            <button id="downloadButton" class="download-button">
+                <i class="fas fa-download"></i> Iniciar Download
+            </button>
+            <div class="progress-bar">
+                <div id="downloadProgress" class="progress"></div>
             </div>
-            <table class="error-table">
-                <tr>
-                    <td>Servidor NetFutur</td>
-                    <td class="error-icon">Erro</td>
-                </tr>
-                <tr>
-                    <td>Serviços De BackEnd</td>
-                    <td class="error-icon">Erro</td>
-                </tr>
-                <tr>
-                    <td>Api</td>
-                    <td class="error-icon">Erro</td>
-                </tr>
-                <tr>
-                    <td>Cdn</td>
-                    <td class="error-icon">Erro</td>
-                </tr>
-                <tr>
-                    <td>Network</td>
-                    <td class="error-icon">Erro</td>
-                </tr>
-            </table>
-            <div>
-                <h3>Locais Afetados</h3>
-                <p>Brasil, Uruguai, Estados Unidos</p>
-            </div>
-            <div>
-                <h3>Usuários Afetados</h3>
-                <p>30 Mil Usuários</p>
-            </div>
-            <div>
-                <h3>Operacional do Sistema</h3>
-                <p>3%</p>
-            </div>
-            <div class="log-container" id="logContainer"></div>
         </div>
     </div>
-    <div class="footer">
-        Tela De Erro Hospedado fora do servidor NetFutur
-    </div>
+
+    <footer>
+        <p>Tela de Erro Hospedada fora do servidor NetFutur</p>
+        <p>© 2023 NetFutur Serviços. Todos os direitos reservados.</p>
+    </footer>
 
     <script>
-        const loadingScreen = document.getElementById('loadingScreen');
-        const connectingScreen = document.getElementById('connectingScreen');
-        const updateScreen = document.getElementById('updateScreen');
-        const errorScreen = document.getElementById('errorScreen');
-        const loadingProgress = document.getElementById('loadingProgress');
-        const loadingText = document.getElementById('loadingText');
-        const connectingProgress = document.getElementById('connectingProgress');
-        const downloadButton = document.getElementById('downloadButton');
-        const downloadProgress = document.getElementById('downloadProgress');
-        const downloadBar = document.getElementById('downloadBar');
+        // Chart initialization
+        const ctx = document.getElementById('systemChart').getContext('2d');
+        const systemChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Carga do Sistema (%)',
+                    data: [],
+                    borderColor: 'rgb(233, 69, 96)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Function to update chart data
+        function updateChartData() {
+            const newData = Math.floor(Math.random() * 100);
+            systemChart.data.labels.push(moment().format('HH:mm:ss'));
+            systemChart.data.datasets[0].data.push(newData);
+
+            if (systemChart.data.labels.length > 20) {
+                systemChart.data.labels.shift();
+                systemChart.data.datasets[0].data.shift();
+            }
+
+            systemChart.update();
+        }
+
+        // Update chart every 2 seconds
+        setInterval(updateChartData, 2000);
+
+        // Log generation
         const logContainer = document.getElementById('logContainer');
+        const logTypes = ['error', 'warning', 'info'];
+        const logMessages = [
+            'Falha na conexão com o servidor principal',
+            'Tentativa de reconexão em 5 segundos',
+            'Verificando integridade do banco de dados',
+            'API retornou código de status 500',
+            'Cache desatualizado, limpando...',
+            'Iniciando processo de backup',
+            'Falha na autenticação do usuário',
+            'Uso de CPU acima de 90%',
+            'Atualizando índices do banco de dados',
+            'Timeout na requisição para CDN'
+        ];
 
-        const systems = ['HexaWave Designer UI', 'HexaWave Files', 'Sistema', 'Codigo', 'Site'];
-        let currentSystem = 0;
+        function generateLog() {
+            const logType = _.sample(logTypes);
+            const logMessage = _.sample(logMessages);
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${logType}`;
+            logEntry.innerHTML = `<strong>[${moment().format('HH:mm:ss')}]</strong> ${logType.toUpperCase()}: ${logMessage}`;
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
 
-        function updateLoadingProgress(progress) {
-            loadingProgress.style.width = `${progress}%`;
-            if (progress >= 40 && currentSystem < systems.length) {
-                loadingText.textContent = `Carregando ${systems[currentSystem]}...`;
-                currentSystem++;
+            if (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.lastChild);
             }
         }
 
-        function simulateLoading() {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 1;
-                updateLoadingProgress(progress);
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(showConnectingScreen, 1000);
-                }
-            }, 70);
-        }
+        // Generate a new log entry every second
+        setInterval(generateLog, 1000);
 
-        function showConnectingScreen() {
-            loadingScreen.classList.add('hidden');
-            connectingScreen.classList.remove('hidden');
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                connectingProgress.style.width = `${progress}%`;
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(showUpdateScreen, 1000);
-                }
-            }, 100);
-        }
-
-        function showUpdateScreen() {
-            connectingScreen.classList.add('hidden');
-            updateScreen.classList.remove('hidden');
-        }
+        // Simulated file download
+        const downloadButton = document.getElementById('downloadButton');
+        const downloadProgress = document.getElementById('downloadProgress');
 
         downloadButton.addEventListener('click', () => {
             downloadButton.disabled = true;
-            downloadProgress.classList.remove('hidden');
+            downloadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Baixando...';
             let progress = 0;
-            const interval = setInterval(() => {
-                progress += 1;
-                downloadBar.style.width = `${progress}%`;
+
+            const downloadInterval = setInterval(() => {
+                progress += Math.random() * 10;
                 if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(showErrorScreen, 1000);
+                    progress = 100;
+                    clearInterval(downloadInterval);
+                    downloadButton.innerHTML = '<i class="fas fa-check"></i> Download Concluído';
+                    downloadButton.disabled = false;
                 }
-            }, 50);
+                downloadProgress.style.width = `${progress}%`;
+            }, 500);
         });
 
-        function showErrorScreen() {
-            updateScreen.classList.add('hidden');
-            errorScreen.classList.remove('hidden');
-            generateLogs();
-        }
-
-        function generateLogs() {
-            const possibleLogs = [
-                "Erro: Falha na conexão com o servidor principal",
-                "Aviso: Tentativa de reconexão em 5 segundos",
-                "Info: Verificando integridade do banco de dados",
-                "Erro: API retornou código de status 500",
-                "Aviso: Cache desatualizado, limpando...",
-                "Info: Iniciando processo de backup",
-                "Erro: Falha na autenticação do usuário",
-                "Aviso: Uso de CPU acima de 90%",
-                "Info: Atualizando índices do banco de dados",
-                "Erro: Timeout na requisição para CDN"
-            ];
-
-            setInterval(() => {
-                const randomLog = possibleLogs[Math.floor(Math.random() * possibleLogs.length)];
-                const logElement = document.createElement('p');
-                logElement.textContent = `[${new Date().toLocaleTimeString()}] ${randomLog}`;
-                logContainer.prepend(logElement);
-                if (logContainer.children.length > 100) {
-                    logContainer.removeChild(logContainer.lastChild);
-                }
-            }, 1000);
-        }
-
-        simulateLoading();
+        // Blinking effect for offline status
+        const offlineStatus = document.querySelector('.status-indicator span');
+        offlineStatus.classList.add('blink');
     </script>
 </body>
 </html>
