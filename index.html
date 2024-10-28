@@ -1,574 +1,164 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EducaLink - Perfil do Usuário</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Sistema de Perfil Escolar</title>
     <style>
-        :root {
-            --background-primary: #f0f2f5;
-            --background-secondary: #ffffff;
-            --text-primary: #1c1e21;
-            --text-secondary: #65676b;
-            --accent-color: #1877f2;
-            --accent-hover: #166fe5;
-            --border-color: #dddfe2;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --danger-color: #dc3545;
-            --success-color: #28a745;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            background-color: var(--background-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+.profile-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
 
-        .sidebar {
-            width: 240px;
-            background-color: var(--background-secondary);
-            padding: 20px;
-            box-shadow: 2px 0 5px var(--shadow-color);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
+.profile img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
 
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            margin-left: 240px;
-        }
+#edit-profile-btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-        .profile-header {
-            background-color: var(--background-secondary);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px var(--shadow-color);
-            margin-bottom: 20px;
-        }
+.profile-editor {
+    display: none;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 
-        .banner {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
+.profile-editor label {
+    display: block;
+    margin: 10px 0 5px;
+}
 
-        .profile-info {
-            display: flex;
-            align-items: flex-end;
-            padding: 20px;
-            position: relative;
-        }
+.profile-editor input, .profile-editor select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid var(--background-secondary);
-            object-fit: cover;
-            margin-top: -75px;
-        }
-
-        .user-details {
-            margin-left: 20px;
-            flex-grow: 1;
-        }
-
-        .username {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .user-tag {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .btn-secondary {
-            background-color: var(--background-primary);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--border-color);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #218838;
-        }
-
-        .profile-section {
-            background-color: var(--background-secondary);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px var(--shadow-color);
-        }
-
-        h2 {
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-
-        .nav-menu {
-            list-style-type: none;
-        }
-
-        .nav-menu li {
-            margin-bottom: 15px;
-        }
-
-        .nav-menu a {
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            background-color: var(--background-primary);
-        }
-
-        .nav-menu i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-
-        .note, .quote, .link {
-            background-color: var(--background-primary);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .quote {
-            font-style: italic;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 15px;
-        }
-
-        .link a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .link a:hover {
-            text-decoration: underline;
-        }
-
-        .edit-buttons {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: none;
-        }
-
-        .note:hover .edit-buttons,
-        .quote:hover .edit-buttons {
-            display: block;
-        }
-
-        .edit-btn, .delete-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 5px;
-        }
-
-        .edit-btn {
-            color: var(--accent-color);
-        }
-
-        .delete-btn {
-            color: var(--danger-color);
-        }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-family: inherit;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                padding: 10px;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 10px;
-            }
-
-            .nav-menu {
-                display: flex;
-                justify-content: space-around;
-                flex-wrap: wrap;
-            }
-
-            .nav-menu li {
-                margin: 5px;
-            }
-
-            .profile-info {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .profile-picture {
-                margin-top: -50px;
-                width: 100px;
-                height: 100px;
-            }
-
-            .user-details {
-                margin-left: 0;
-                margin-top: 10px;
-            }
-
-            .profile-actions {
-                justify-content: center;
-            }
-        }
+.profile-editor button {
+    padding: 10px 15px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
     </style>
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar">
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="perfil.html"><i class="fas fa-user"></i> Meu Perfil</a></li>
-                    <li><a href="editprofile.html"><i class="fas fa-edit"></i> Editar Perfil</a></li>
-                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="#"><i class="fas fa-book"></i> Meus Cursos</a></li>
-                    <li><a href="#"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Configurações</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="main-content">
-            <div class="profile-header">
-                <div class="banner" id="banner"></div>
-                <div class="profile-info">
-                    <img src="" alt="Foto de Perfil" class="profile-picture" id="profilePhoto">
-                    <div class="user-details">
-                        <h1 class="username" id="nomeUsuario"></h1>
-                        <span class="user-tag" id="tipoContaUsuario"></span>
-                        <div class="profile-actions">
-                            <button class="btn btn-primary" onclick="window.location.href='editprofile.html'">Editar Perfil</button>
-                            <button class="btn btn-secondary">Mensagem</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="profile-section">
-                <h2>Sobre Mim</h2>
-                <p id="descricaoUsuario"></p>
-                <div class="badges">
-                    <span class="badge" id="pronomes"></span>
-                    <span class="badge" id="tipoConta"></span>
-                </div>
-            </div>
+    <div class="profile-container">
+        <h1>Perfil do Aluno</h1>
+        <div class="profile">
+            <img id="profile-img" src="default.jpg" alt="Foto de Perfil">
+            <h2 id="profile-name">Nome do Aluno</h2>
+            <p id="profile-level">Nível Escolar: <span id="profile-series"></span></p>
+            <p id="profile-status">Status: <span id="profile-custom-status"></span></p>
+        </div>
+        <button id="edit-profile-btn">Editar Perfil</button>
+    </div>
 
-            <div class="profile-section">
-                <h2>Biografia</h2>
-                <p id="biografia"></p>
-            </div>
+    <div class="profile-editor" id="profile-editor">
+        <h2>Editor de Perfil</h2>
+        <form id="profile-form">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
 
-            <div class="profile-section">
-                <h2>Notas (24 horas)</h2>
-                <div id="notas"></div>
-                <textarea id="novaNota" placeholder="Nova nota"></textarea>
-                <button class="btn btn-primary" id="adicionarNota">Adicionar Nota</button>
-            </div>
+            <label for="series">Série:</label>
+            <select id="series" name="series">
+                <option value="Fundamental 1">Fundamental 1</option>
+                <option value="Fundamental 2">Fundamental 2</option>
+                <option value="Ensino Médio">Ensino Médio</option>
+            </select>
 
-            <div class="profile-section">
-                <h2>Citações Favoritas</h2>
-                <div id="citacoes"></div>
-                <textarea id="novaCitacao" placeholder="Nova citação"></textarea>
-                <button class="btn btn-primary" id="adicionarCitacao">Adicionar Citação</button>
-            </div>
+            <label for="status">Frase de Status:</label>
+            <input type="text" id="status" name="status">
 
-            <div class="profile-section">
-                <h2>Links</h2>
-                <div id="links"></div>
-                <input type="text" id="novoLink" placeholder="Novo link">
-                <button class="btn btn-primary" id="adicionarLink">Adicionar Link</button>
-            </div>
-        </main>
+            <label for="profile-pic">Foto de Perfil (URL):</label>
+            <input type="url" id="profile-pic" name="profile-pic">
+
+            <button type="submit">Salvar Perfil</button>
+        </form>
     </div>
 
     <script>
-        // Simulação de dados do usuário (substitua isso pela integração real com o Firebase)
-        const userData = {
-            nomeUsuario: "João Silva",
-            tipoConta: "Estudante",
-            descricao: "Apaixonado por aprender e compartilhar conhecimento.",
-            pronomes: "Ele/Dele",
-            biografia: "Estudante de Engenharia de Software, focado em desenvolvimento web e inteligência artificial.",
-            bannerUrl: "https://exemplo.com/banner.jpg",
-            fotoUrl: "https://exemplo.com/foto.jpg"
-        };
+        // Função para carregar perfil do localStorage
+function loadProfile() {
+    const name = localStorage.getItem('profileName');
+    const series = localStorage.getItem('profileSeries');
+    const status = localStorage.getItem('profileStatus');
+    const profilePic = localStorage.getItem('profilePic');
 
-        // Simulação de permissões do usuário
-        const userPermissions = {
-            notas: true,
-            citacoes: true,
-            links: true
-        };
+    if (name) {
+        document.getElementById('profile-name').textContent = name;
+    }
+    if (series) {
+        document.getElementById('profile-series').textContent = series;
+    }
+    if (status) {
+        document.getElementById('profile-custom-status').textContent = status;
+    }
+    if (profilePic) {
+        document.getElementById('profile-img').src = profilePic;
+    }
+}
 
-        // Função para preencher os dados do usuário na página
-        function preencherDadosUsuario() {
-            document.getElementById('nomeUsuario').textContent = userData.nomeUsuario;
-            document.getElementById('tipoContaUsuario').textContent = userData.tipoConta;
-            document.getElementById('descricaoUsuario').textContent = userData.descricao;
-            document.getElementById('pronomes').textContent = userData.pronomes;
-            document.getElementById('tipoConta').textContent = userData.tipoConta;
-            document.getElementById('biografia').textContent = userData.biografia;
+// Função para salvar perfil no localStorage
+function saveProfile(event) {
+    event.preventDefault();
 
-            document.getElementById('banner').style.backgroundImage = `url('${userData.bannerUrl}')`;
-            document.getElementById('profilePhoto').src = userData.fotoUrl;
-        }
+    const name = document.getElementById('name').value;
+    const series = document.getElementById('series').value;
+    const status = document.getElementById('status').value;
+    const profilePic = document.getElementById('profile-pic').value;
 
-        // Função para aplicar as permissões
-        function aplicarPermissoes() {
-            document.getElementById('novaNota').style.display = userPermissions.notas ? 'block' : 'none';
-            document.getElementById('adicionarNota').style.display = userPermissions.notas ? 'inline-block' : 'none';
-            document.getElementById('novaCitacao').style.display = userPermissions.citacoes ? 'block' : 'none';
-            document.getElementById('adicionarCitacao').style.display = userPermissions.citacoes ? 'inline-block' : 'none';
-            document.getElementById('novoLink').style.display = userPermissions.links ? 'block' : 'none';
-            document.getElementById('adicionarLink').style.display = userPermissions.links ? 'inline-block' : 'none';
-        }
+    // Salvar no localStorage
+    localStorage.setItem('profileName', name);
+    localStorage.setItem('profileSeries', series);
+    localStorage.setItem('profileStatus', status);
+    localStorage.setItem('profilePic', profilePic);
 
-        // Funções para gerenciar notas
-        let notas = [];
+    // Atualizar a interface
+    loadProfile();
 
-        function adicionarNota() {
-            const texto = document.getElementById('novaNota').value.trim();
-            if (texto) {
-                const nota = { id: Date.now(), texto, data: new Date().toISOString() };
-                notas.push(nota);
-                document.getElementById('novaNota').value = '';
-                renderizarNotas();
-            }
-        }
+    // Fechar editor
+    document.getElementById('profile-editor').style.display = 'none';
+}
 
-        function editarNota(id) {
-            const nota = notas.find(n => n.id === id);
-            if (nota) 
-            {
-                const novoTexto = prompt("Editar nota:", nota.texto);
-                if (novoTexto !== null) {
-                    nota.texto = novoTexto.trim();
-                    renderizarNotas();
-                }
-            }
-        }
+// Mostrar editor de perfil
+document.getElementById('edit-profile-btn').addEventListener('click', function() {
+    document.getElementById('profile-editor').style.display = 'block';
+});
 
-        function excluirNota(id) {
-            if (confirm("Tem certeza que deseja excluir esta nota?")) {
-                notas = notas.filter(n => n.id !== id);
-                renderizarNotas();
-            }
-        }
+// Carregar perfil ao iniciar
+window.onload = loadProfile;
 
-        function renderizarNotas() {
-            const notasContainer = document.getElementById('notas');
-            notasContainer.innerHTML = '';
-            notas.forEach(nota => {
-                if (new Date(nota.data).getTime() + 24 * 60 * 60 * 1000 > Date.now()) {
-                    const notaElement = document.createElement('div');
-                    notaElement.className = 'note';
-                    notaElement.innerHTML = `
-                        ${nota.texto}
-                        <div class="edit-buttons">
-                            <button class="edit-btn" onclick="editarNota(${nota.id})"><i class="fas fa-edit"></i></button>
-                            <button class="delete-btn" onclick="excluirNota(${nota.id})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `;
-                    notasContainer.appendChild(notaElement);
-                }
-            });
-        }
-
-        // Funções para gerenciar citações
-        let citacoes = [];
-
-        function adicionarCitacao() {
-            const texto = document.getElementById('novaCitacao').value.trim();
-            if (texto) {
-                const citacao = { id: Date.now(), texto };
-                citacoes.push(citacao);
-                document.getElementById('novaCitacao').value = '';
-                renderizarCitacoes();
-            }
-        }
-
-        function editarCitacao(id) {
-            const citacao = citacoes.find(c => c.id === id);
-            if (citacao) {
-                const novoTexto = prompt("Editar citação:", citacao.texto);
-                if (novoTexto !== null) {
-                    citacao.texto = novoTexto.trim();
-                    renderizarCitacoes();
-                }
-            }
-        }
-
-        function excluirCitacao(id) {
-            if (confirm("Tem certeza que deseja excluir esta citação?")) {
-                citacoes = citacoes.filter(c => c.id !== id);
-                renderizarCitacoes();
-            }
-        }
-
-        function renderizarCitacoes() {
-            const citacoesContainer = document.getElementById('citacoes');
-            citacoesContainer.innerHTML = '';
-            citacoes.forEach(citacao => {
-                const citacaoElement = document.createElement('div');
-                citacaoElement.className = 'quote';
-                citacaoElement.innerHTML = `
-                    "${citacao.texto}"
-                    <div class="edit-buttons">
-                        <button class="edit-btn" onclick="editarCitacao(${citacao.id})"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" onclick="excluirCitacao(${citacao.id})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                citacoesContainer.appendChild(citacaoElement);
-            });
-        }
-
-        // Funções para gerenciar links
-        let links = [];
-
-        function adicionarLink() {
-            const url = document.getElementById('novoLink').value.trim();
-            if (url) {
-                links.push(url);
-                document.getElementById('novoLink').value = '';
-                renderizarLinks();
-            }
-        }
-
-        function renderizarLinks() {
-            const linksContainer = document.getElementById('links');
-            linksContainer.innerHTML = '';
-            links.forEach(link => {
-                const linkElement = document.createElement('div');
-                linkElement.className = 'link';
-                const linkAnchor = document.createElement('a');
-                linkAnchor.href = link;
-                linkAnchor.textContent = link;
-                linkAnchor.target = '_blank';
-                linkElement.appendChild(linkAnchor);
-                linksContainer.appendChild(linkElement);
-            });
-        }
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            preencherDadosUsuario();
-            aplicarPermissoes();
-            renderizarNotas();
-            renderizarCitacoes();
-            renderizarLinks();
-
-            document.getElementById('adicionarNota').addEventListener('click', adicionarNota);
-            document.getElementById('adicionarCitacao').addEventListener('click', adicionarCitacao);
-            document.getElementById('adicionarLink').addEventListener('click', adicionarLink);
-        });
+// Submeter o formulário de edição de perfil
+document.getElementById('profile-form').addEventListener('submit', saveProfile);
     </script>
 </body>
 </html>
