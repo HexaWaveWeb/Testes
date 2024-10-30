@@ -1,19 +1,443 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página PHP</title>
+    <title>Zap.exe Console - Kali Linux Style</title>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0c0c0c;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0c0c0c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #loading-content {
+            text-align: center;
+        }
+
+        #progress-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        #progress {
+            width: 0;
+            height: 100%;
+            background-color: #00ff00;
+            transition: width 0.5s;
+        }
+
+        #loading-text {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        #terminal-container {
+            height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #0c0c0c;
+            position: relative;
+        }
+
+        #terminal {
+            height: calc(100% - 30px);
+            background-color: #0c0c0c;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        #toolbar {
+            height: 30px;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 14px;
+        }
+
+        .toolbar-item {
+            margin-right: 15px;
+            color: #00ff00;
+        }
+
+        .xterm-cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #kali-logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            opacity: 0.5;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bem-vindo à minha página em PHP!</h1>
+    <div id="loading-screen">
+        <div id="loading-content">
+            <h1>Inicializando Zap.exe no Kali Linux</h1>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <p id="loading-text">Carregando...</p>
+        </div>
+    </div>
+    <div id="terminal-container" style="display: none;">
+        <div id="toolbar">
+            <span class="toolbar-item">root@kali</span>
+            <span class="toolbar-item">~</span>
+            <span class="toolbar-item">Zap.exe</span>
+        </div>
+        <div id="terminal"></div>
+        <img id="kali-logo" src="https://www.kali.org/images/kali-dragon-icon.svg" alt="Kali Linux Logo">
+    </div>
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <script src="https://unpkg.com/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+    <script>
+        let term;
+        const loadingScreen = document.getElementById('loading-screen');
+        const terminalContainer = document.getElementById('terminal-container');
+        const progressBar = document.getElementById('progress');
+        const loadingText = document.getElementById('loading-text');
 
-    <?php
-        // Exibe uma mensagem
-        echo "<p>Olá, Mundo! Esta é uma página PHP simples.</p>";
-    ?>
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = `${progress}%`;
+                loadingText.textContent = `Carregando Zap.exe no Kali Linux... ${Math.round(progress)}%`;
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(initializeConsole, 1000);
+                }
+            }, 200);
+        }
 
-    <p>Você pode adicionar mais conteúdo HTML e PHP conforme necessário.</p>
+        function initializeConsole() {
+            loadingScreen.style.display = 'none';
+            terminalContainer.style.display = 'block';
+            
+            term = new Terminal({
+                cursorBlink: true,
+                theme: {
+                    background: '#0c0c0c',
+                    foreground: '#00ff00',
+                    cursor: '#00ff00'
+                },
+                fontFamily: 'Courier New, monospace',
+                fontSize: 14,
+                rendererType: 'canvas'
+            });
+
+            const fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            term.open(document.getElementById('terminal'));
+            fitAddon.fit();
+
+            term.writeln('Bem-vindo ao Zap.exe no Kali Linux');
+            term.writeln('Iniciando instalação...');
+            simulateInstallation();
+        }
+
+        function simulateInstallation() {
+            const installationSteps = [
+                'Verificando dependências...',
+                'Baixando pacotes...',
+                'Configurando ambiente Kali...',
+                'Instalando módulos de segurança...',
+                'Otimizando performance...',
+                'Configurando firewall...',
+                'Finalizando instalação...'
+            ];
+
+            let stepIndex = 0;
+            const installationInterval = setInterval(() => {
+                if (stepIndex < installationSteps.length) {
+                    term.writeln(`[*] ${installationSteps[stepIndex]}`);
+                    stepIndex++;
+                } else {
+                    clearInterval(installationInterval);
+                    setTimeout(requestPayment, 2000);
+                }
+            }, 1000);
+        }
+
+        function requestPayment() {
+            term.writeln('\r\n[!] Zap.exe é um módulo pago do Kali Linux.');
+            const pixKey = generatePixKey();
+            term.writeln(`[+] Chave PIX para pagamento: ${pixKey}`);
+            term.writeln('[*] Aguardando confirmação de pagamento...');
+
+            setTimeout(() => {
+                term.writeln('\r\n[+] Pagamento de R$ 76,00 recebido de Rafael Silva Inacio.');
+                term.writeln('[*] Liberando acesso ao módulo Zap.exe...\r\n');
+                setTimeout(simulateFinalInstallation, 2000);
+            }, 10000); // Reduzido para 10 segundos para fins de demonstração
+        }
+
+        function generatePixKey() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 32; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        function simulateFinalInstallation() {
+            const totalFiles = 600;
+            let installedFiles = 0;
+            const installInterval = setInterval(() => {
+                const filesToInstall = Math.floor(Math.random() * 10) + 1;
+                installedFiles += filesToInstall;
+                if (installedFiles >= totalFiles) {
+                    installedFiles = totalFiles;
+                    clearInterval(installInterval);
+                    finalizeInstallation();
+                }
+                term.writeln(`[*] Instalando arquivos: ${installedFiles}/${totalFiles} MB`);
+            }, 100);
+        }
+
+        function finalizeInstallation() {
+            term.writeln('\r\n[+] Instalação concluída!');
+            term.writeln('[*] Iniciando Zap.exe no ambiente Kali Linux...\r\n');
+            setTimeout(() => {
+                term.write('root@kali:~# ');
+                term.onKey(handleUserInput);
+            }, 2000);
+        }
+
+        let currentLine = '';
+        let cursorPosition = 0;
+
+        function handleUserInput(e) {
+            const printable = !e.domEvent.altKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
+
+            if (e.domEvent.keyCode === 13) { // Enter key
+                term.write('\r\n');
+                processCommand(currentLine);
+                currentLine = '';
+                cursorPosition = 0;
+                term.write('root@kali:~# ');
+            } else if (e.domEvent.keyCode === 8) { // Backspace
+                if (cursorPosition > 0) {
+                    currentLine = currentLine.slice(0, cursorPosition - 1) + currentLine.slice(cursorPosition);
+                    cursorPosition--;
+                    term.write('\b \b');
+                    term.write(currentLine.slice(cursorPosition));
+                    term.write('\u001b[K');
+                    for (let i = 0; i < currentLine.length - cursorPosition; i++) {
+                        term.write('\u001b[D');
+                    }
+                }
+            } else if (e.domEvent.keyCode === 37) { // Left arrow
+                if (cursorPosition > 0) {
+                    cursorPosition--;
+                    term.write('\u001b[D');
+                }
+            } else if (e.domEvent.keyCode === 39) { // Right arrow
+                if (cursorPosition < currentLine.length) {
+                    cursorPosition++;
+                    term.write('\u001b[C');
+                }
+            } else if (printable) {
+                currentLine = currentLine.slice(0, cursorPosition) + e.key + currentLine.slice(cursorPosition);
+                cursorPosition++;
+                term.write(e.key);
+                term.write(currentLine.slice(cursorPosition));
+                for (let i = 0; i < currentLine.length - cursorPosition; i++) {
+                    term.write('\u001b[D');
+                }
+            }
+        }
+
+        function processCommand(command) {
+            const [cmd, ...args] = command.split(' ');
+            switch(cmd.toLowerCase()) {
+                case 'help':
+                    showHelp();
+                    break;
+                case '/ip':
+                    if (args[0] === 'number') generateIP(args[1]);
+                    else term.writeln('Comando inválido. Use "/ip number <numero de zap>"');
+                    break;
+                case '/number':
+                    if (args[0] === 'zap.exe') downloadWhatsAppData(args[1]);
+                    else term.writeln('Comando inválido. Use "/number zap.exe <número de zap>"');
+                    break;
+                case '/cell':
+                    if (args[0] === 'phone') downloadCellPhoneData(args[1]);
+                    else term.writeln('Comando inválido. Use "/cell phone <ip>"');
+                    break;
+                case '/execute':
+                    if (args[0] === 'cell' && args[1] === 'phone' && args[2] === 'code') executeCellPhoneCode(args[3]);
+                    else term.writeln('Comando inválido. Use "/execute cell phone code <ip>"');
+                    break;
+                case '/reset':
+                    resetModem(args[0]);
+                    break;
+                case '/dead':
+                    killPhone(args[0]);
+                    break;
+                case 'clear':
+                    term.clear();
+                    break;
+                case 'exit':
+                    term.writeln('Saindo do Zap.exe...');
+                    setTimeout(() => {
+                        term.writeln('Sessão encerrada.');
+                        term.writeln('Para iniciar uma nova sessão, recarregue a página.');
+                    }, 1000);
+                    break;
+                default:
+                    term.writeln(`Comando não reconhecido: ${command}`);
+                    term.writeln('Digite "help" para ver a lista de comandos disponíveis.');
+            }
+        }
+
+        function showHelp() {
+            term.writeln('Comandos disponíveis:');
+            term.writeln('help - Mostra esta lista de comandos');
+            term.writeln('/ip number <numero de zap> - Gera um IP para o número de WhatsApp');
+            term.writeln('/number zap.exe <número de zap> - Baixa conversas do WhatsApp');
+            term.writeln('/cell phone <ip> - Baixa dados do celular');
+            term.writeln('/execute cell phone code <ip> - Quebra a segurança do celular');
+            term.writeln('/reset <ip> - Copia dados do modem de Internet');
+            term.writeln('/dead <ip> - Simula a exclusão do sistema do celular');
+            term.writeln('clear - Limpa a tela do terminal');
+            term.writeln('exit - Sai do Zap.exe');
+        }
+
+        function generateIP(number) {
+            if (number && number.length === 11) {
+                const ip = `192.168.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+                term.writeln(`[+] IP gerado para o número ${number}: ${ip}`);
+            } else {
+                term.writeln('[!] Número de WhatsApp inválido. Use um número com 11 dígitos.');
+            }
+        }
+
+        function downloadWhatsAppData(number) {
+            if (number && number.length === 11) {
+                term.writeln(`[*] Iniciando download das conversas do WhatsApp para o número ${number}...`);
+                simulateDataDownload(2048, 'Conversas do WhatsApp');
+            } else {
+                term.writeln('[!] Número de WhatsApp inválido. Use um número com 11 dígitos.');
+            }
+        }
+
+        function downloadCellPhoneData(ip) {
+            if (isValidIP(ip)) {
+                term.writeln(`[*] Iniciando download dos dados do celular com IP ${ip}...`);
+                simulateDataDownload(3072, 'Dados do celular');
+            } else {
+                term.writeln('[!] IP inválido. Use um endereço IP válido.');
+            }
+        }
+
+        function  executeCellPhoneCode(ip) {
+            if (isValidIP(ip)) {
+                term.writeln(`[*] Quebrando sistema de segurança do celular com IP ${ip}...`);
+                setTimeout(() => {
+                    term.writeln('[+] Sistema de segurança quebrado. Arquivos deletados encontrados:');
+                    term.writeln('  - 150 imagens JPEG');
+                    term.writeln('  - 50 documentos PDF');
+                    term.writeln('  - 30 arquivos de áudio MP3');
+                    term.writeln('  - 10 vídeos MP4');
+                }, 5000);
+            } else {
+                term.writeln('[!] IP inválido. Use um endereço IP válido.');
+            }
+        }
+
+        function resetModem(ip) {
+            if (isValidIP(ip)) {
+                term.writeln(`[*] Copiando dados do modem com IP ${ip}...`);
+                simulateDataDownload(1024, 'Dados do modem');
+            } else {
+                term.writeln('[!] IP inválido. Use um endereço IP válido.');
+            }
+        }
+
+        function killPhone(ip) {
+            if (isValidIP(ip)) {
+                term.writeln(`[*] Iniciando processo de exclusão do sistema do celular com IP ${ip}...`);
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    term.writeln(`[*] Progresso: ${progress}%`);
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        term.writeln('[+] Sistema do celular completamente excluído.');
+                    }
+                }, 1000);
+            } else {
+                term.writeln('[!] IP inválido. Use um endereço IP válido.');
+            }
+        }
+
+        function simulateDataDownload(size, type) {
+            let downloaded = 0;
+            const interval = setInterval(() => {
+                downloaded += Math.floor(Math.random() * 100) + 50;
+                if (downloaded >= size) {
+                    downloaded = size;
+                    clearInterval(interval);
+                    term.writeln(`[+] Download de ${type} concluído. Total: ${size} MB`);
+                    term.writeln('[*] Dados armazenados localmente.');
+                }
+                term.writeln(`[*] Baixando ${type}: ${downloaded}/${size} MB`);
+            }, 500);
+        }
+
+        function isValidIP(ip) {
+            const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+            return ipPattern.test(ip);
+        }
+
+        window.onload = simulateLoading;
+        window.onresize = () => {
+            if (term) {
+                const fitAddon = new FitAddon.FitAddon();
+                term.loadAddon(fitAddon);
+                fitAddon.fit();
+            }
+        };
+    </script>
 </body>
 </html>
