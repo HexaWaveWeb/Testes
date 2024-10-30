@@ -2,163 +2,18 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Perfil Escolar</title>
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-}
-
-.profile-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.profile img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-}
-
-#edit-profile-btn {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.profile-editor {
-    display: none;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.profile-editor label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-.profile-editor input, .profile-editor select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.profile-editor button {
-    padding: 10px 15px;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-    </style>
+    <title>Página PHP</title>
 </head>
 <body>
+    <h1>Bem-vindo à minha página em PHP!</h1>
 
-    <div class="profile-container">
-        <h1>Perfil do Aluno</h1>
-        <div class="profile">
-            <img id="profile-img" src="default.jpg" alt="Foto de Perfil">
-            <h2 id="profile-name">Nome do Aluno</h2>
-            <p id="profile-level">Nível Escolar: <span id="profile-series"></span></p>
-            <p id="profile-status">Status: <span id="profile-custom-status"></span></p>
-        </div>
-        <button id="edit-profile-btn">Editar Perfil</button>
-    </div>
+    <?php
+        // Exibe uma mensagem
+        echo "<p>Olá, Mundo! Esta é uma página PHP simples.</p>";
+    ?>
 
-    <div class="profile-editor" id="profile-editor">
-        <h2>Editor de Perfil</h2>
-        <form id="profile-form">
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="series">Série:</label>
-            <select id="series" name="series">
-                <option value="Fundamental 1">Fundamental 1</option>
-                <option value="Fundamental 2">Fundamental 2</option>
-                <option value="Ensino Médio">Ensino Médio</option>
-            </select>
-
-            <label for="status">Frase de Status:</label>
-            <input type="text" id="status" name="status">
-
-            <label for="profile-pic">Foto de Perfil (URL):</label>
-            <input type="url" id="profile-pic" name="profile-pic">
-
-            <button type="submit">Salvar Perfil</button>
-        </form>
-    </div>
-
-    <script>
-        // Função para carregar perfil do localStorage
-function loadProfile() {
-    const name = localStorage.getItem('profileName');
-    const series = localStorage.getItem('profileSeries');
-    const status = localStorage.getItem('profileStatus');
-    const profilePic = localStorage.getItem('profilePic');
-
-    if (name) {
-        document.getElementById('profile-name').textContent = name;
-    }
-    if (series) {
-        document.getElementById('profile-series').textContent = series;
-    }
-    if (status) {
-        document.getElementById('profile-custom-status').textContent = status;
-    }
-    if (profilePic) {
-        document.getElementById('profile-img').src = profilePic;
-    }
-}
-
-// Função para salvar perfil no localStorage
-function saveProfile(event) {
-    event.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const series = document.getElementById('series').value;
-    const status = document.getElementById('status').value;
-    const profilePic = document.getElementById('profile-pic').value;
-
-    // Salvar no localStorage
-    localStorage.setItem('profileName', name);
-    localStorage.setItem('profileSeries', series);
-    localStorage.setItem('profileStatus', status);
-    localStorage.setItem('profilePic', profilePic);
-
-    // Atualizar a interface
-    loadProfile();
-
-    // Fechar editor
-    document.getElementById('profile-editor').style.display = 'none';
-}
-
-// Mostrar editor de perfil
-document.getElementById('edit-profile-btn').addEventListener('click', function() {
-    document.getElementById('profile-editor').style.display = 'block';
-});
-
-// Carregar perfil ao iniciar
-window.onload = loadProfile;
-
-// Submeter o formulário de edição de perfil
-document.getElementById('profile-form').addEventListener('submit', saveProfile);
-    </script>
+    <p>Você pode adicionar mais conteúdo HTML e PHP conforme necessário.</p>
 </body>
 </html>
